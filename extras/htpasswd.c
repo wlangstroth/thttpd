@@ -49,7 +49,8 @@ static void getword(char *word, char *line, char stop) {
     while((line[y++] = line[x++]));
 }
 
-static int getline(char *s, int n, FILE *f) {
+
+static int thttpd_getline(char *s, int n, FILE *f) {
     register int i=0;
 
     while(1) {
@@ -114,7 +115,7 @@ add_password( char* user, FILE* f )
 
     if ( ! isatty( fileno( stdin ) ) )
 	{
-	(void) fgets( pass, sizeof(pass), stdin );
+	char * ret= fgets( pass, sizeof(pass), stdin );
 	if ( pass[strlen(pass) - 1] == '\n' )
 	    pass[strlen(pass) - 1] = '\0';
 	pw = pass;
@@ -189,7 +190,7 @@ int main(int argc, char *argv[]) {
     strcpy(user,argv[2]);
 
     found = 0;
-    while(!(getline(line,MAX_STRING_LEN,f))) {
+    while(!(thttpd_getline(line,MAX_STRING_LEN,f))) {
         if(found || (line[0] == '#') || (!line[0])) {
             putline(tfp,line);
             continue;
@@ -213,7 +214,8 @@ int main(int argc, char *argv[]) {
     fclose(f);
     fclose(tfp);
     sprintf(command,"cp %s %s",temp_template,argv[1]);
-    system(command);
+    int ret=system(command);
+    sprintf(command,"cp returned ",ret);
     unlink(temp_template);
     exit(0);
 }
