@@ -1,4 +1,4 @@
-# thttpd - tiny/turbo/throttling HTTP server
+# thttpd - tiny HTTP server
 
 thttpd is a simple, small, portable, fast, and secure HTTP server.
 
