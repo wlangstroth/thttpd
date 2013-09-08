@@ -91,17 +91,17 @@ static int              max_age;
 
 
 typedef struct {
-	char           *pattern;
+	char   *pattern;
 	long		max_limit, min_limit;
 	long		rate;
 	off_t		bytes_since_avg;
-	int		num_sending;
+	int		  num_sending;
 }		throttletab;
+
 static throttletab *throttles;
 static int	numthrottles, maxthrottles;
 
 #define THROTTLE_NOLIMIT -1
-
 
 typedef struct {
 	int		conn_state;
@@ -129,7 +129,6 @@ static int	httpd_conn_count;
 #define CNST_PAUSING 3
 #define CNST_LINGERING 4
 
-
 static httpd_server *hs = (httpd_server *) 0;
 int		terminate = 0;
 time_t		start_time, stats_time;
@@ -138,7 +137,6 @@ off_t		stats_bytes;
 int		stats_simultaneous;
 
 static volatile int got_hup, got_usr1, watchdog_flag;
-
 
 /* Forwards. */
 static void	parse_args(int argc, char **argv);
@@ -170,19 +168,16 @@ static void	show_stats(ClientData client_data, struct timeval *nowP);
 static void	logstats(struct timeval *nowP);
 static void	thttpd_logstats(long secs);
 
-
 /* SIGTERM and SIGINT say to exit immediately. */
 static void
 handle_term(int sig)
 {
 	/* Don't need to set up the handler again, since it's a one-shot. */
-
 	shut_down();
 	syslog(LOG_NOTICE, "exiting due to signal %d", sig);
 	closelog();
 	exit(1);
 }
-
 
 /* SIGCHLD - a chile process exitted, so we need to reap the zombie */
 static void
@@ -236,7 +231,6 @@ handle_chld(int sig)
 	errno = oerrno;
 }
 
-
 /* SIGHUP says to re-open the log file. */
 static void
 handle_hup(int sig)
@@ -254,7 +248,6 @@ handle_hup(int sig)
 	/* Restore previous errno. */
 	errno = oerrno;
 }
-
 
 /* SIGUSR1 says to exit as soon as all current connections are done. */
 static void
@@ -280,7 +273,6 @@ handle_usr1(int sig)
 	/* Don't need to restore old errno, since we didn't do any syscalls. */
 }
 
-
 /* SIGUSR2 says to generate the stats syslogs immediately. */
 static void
 handle_usr2(int sig)
@@ -297,7 +289,6 @@ handle_usr2(int sig)
 	/* Restore previous errno. */
 	errno = oerrno;
 }
-
 
 /* SIGALRM is used as a watchdog. */
 static void
@@ -325,7 +316,6 @@ handle_alrm(int sig)
 	errno = oerrno;
 }
 
-
 static void
 re_open_logfile(void)
 {
@@ -346,7 +336,6 @@ re_open_logfile(void)
 		httpd_set_logfp(hs, logfp);
 	}
 }
-
 
 int
 main(int argc, char **argv)
@@ -787,7 +776,6 @@ main(int argc, char **argv)
 	exit(0);
 }
 
-
 static void
 parse_args(int argc, char **argv)
 {
@@ -907,7 +895,6 @@ parse_args(int argc, char **argv)
 		usage();
 }
 
-
 static void
 usage(void)
 {
@@ -916,7 +903,6 @@ usage(void)
 		      argv0);
 	exit(1);
 }
-
 
 static void
 read_config(char *filename)
@@ -1053,7 +1039,6 @@ read_config(char *filename)
 	(void)fclose(fp);
 }
 
-
 static void
 value_required(char *name, char *value)
 {
@@ -1063,7 +1048,6 @@ value_required(char *name, char *value)
 		exit(1);
 	}
 }
-
 
 static void
 no_value_required(char *name, char *value)
@@ -1076,8 +1060,7 @@ no_value_required(char *name, char *value)
 	}
 }
 
-
-static char    *
+static char *
 e_strdup(char *oldstr)
 {
 	char           *newstr;
@@ -1090,7 +1073,6 @@ e_strdup(char *oldstr)
 	}
 	return newstr;
 }
-
 
 static void
 lookup_hostname(httpd_sockaddr * sa4P, size_t sa4_len, int *gotv4P, httpd_sockaddr * sa6P, size_t sa6_len, int *gotv6P)
@@ -1213,7 +1195,6 @@ lookup_hostname(httpd_sockaddr * sa4P, size_t sa4_len, int *gotv4P, httpd_sockad
 #endif				/* USE_IPV6 */
 }
 
-
 static void
 read_throttlefile(char *throttlefile)
 {
@@ -1299,7 +1280,6 @@ read_throttlefile(char *throttlefile)
 	(void)fclose(fp);
 }
 
-
 static void
 shut_down(void)
 {
@@ -1334,11 +1314,10 @@ shut_down(void)
 		free((void *)throttles);
 }
 
-
 static int
 handle_newconnect(struct timeval *tvP, int listen_fd)
 {
-	connecttab     *c;
+	connecttab *c;
 	ClientData	client_data;
 
 	/*
@@ -1410,7 +1389,6 @@ handle_newconnect(struct timeval *tvP, int listen_fd)
 			stats_simultaneous = num_connects;
 	}
 }
-
 
 static void
 handle_read(connecttab * c, struct timeval *tvP)
@@ -1518,22 +1496,20 @@ handle_read(connecttab * c, struct timeval *tvP)
 	fdwatch_add_fd(hc->conn_fd, c, FDW_WRITE);
 }
 
-
 static void
 handle_send(connecttab * c, struct timeval *tvP)
 {
-	size_t		max_bytes;
-	int		sz        , coast;
-	ClientData	client_data;
-	time_t		elapsed;
-	httpd_conn     *hc = c->hc;
-	int		tind;
+	size_t max_bytes;
+	int	sz, coast;
+	ClientData client_data;
+	time_t elapsed;
+	httpd_conn *hc = c->hc;
+	int tind;
 
 	if (c->max_limit == THROTTLE_NOLIMIT)
 		max_bytes = 1000000000L;
 	else
-		max_bytes = c->max_limit / 4;	/* send at most 1/4 seconds
-						 * worth */
+		max_bytes = c->max_limit / 4;	// send at most 1/4 seconds worth
 
 	/* Do we need to write the headers first? */
 	if (hc->responselen == 0) {
@@ -1674,7 +1650,6 @@ handle_send(connecttab * c, struct timeval *tvP)
 	 */
 }
 
-
 static void
 handle_linger(connecttab * c, struct timeval *tvP)
 {
@@ -1691,7 +1666,6 @@ handle_linger(connecttab * c, struct timeval *tvP)
 	if (r <= 0)
 		really_clear_connection(c, tvP);
 }
-
 
 static int
 check_throttles(connecttab * c)
@@ -1730,7 +1704,6 @@ check_throttles(connecttab * c)
 	return 1;
 }
 
-
 static void
 clear_throttles(connecttab * c, struct timeval *tvP)
 {
@@ -1739,7 +1712,6 @@ clear_throttles(connecttab * c, struct timeval *tvP)
 	for (tind = 0; tind < c->numtnums; ++tind)
 		--throttles[c->tnums[tind]].num_sending;
 }
-
 
 static void
 update_throttles(ClientData client_data, struct timeval *nowP)
@@ -1788,7 +1760,6 @@ update_throttles(ClientData client_data, struct timeval *nowP)
 	}
 }
 
-
 static void
 finish_connection(connecttab * c, struct timeval *tvP)
 {
@@ -1798,7 +1769,6 @@ finish_connection(connecttab * c, struct timeval *tvP)
 	/* And clear. */
 	clear_connection(c, tvP);
 }
-
 
 static void
 clear_connection(connecttab * c, struct timeval *tvP)
@@ -1847,7 +1817,6 @@ clear_connection(connecttab * c, struct timeval *tvP)
 		really_clear_connection(c, tvP);
 }
 
-
 static void
 really_clear_connection(connecttab * c, struct timeval *tvP)
 {
@@ -1866,7 +1835,6 @@ really_clear_connection(connecttab * c, struct timeval *tvP)
 						 * implied */
 	--num_connects;
 }
-
 
 static void
 idle(ClientData client_data, struct timeval *nowP)
@@ -1900,7 +1868,6 @@ idle(ClientData client_data, struct timeval *nowP)
 	}
 }
 
-
 static void
 wakeup_connection(ClientData client_data, struct timeval *nowP)
 {
@@ -1924,7 +1891,6 @@ linger_clear_connection(ClientData client_data, struct timeval *nowP)
 	really_clear_connection(c, nowP);
 }
 
-
 static void
 occasional(ClientData client_data, struct timeval *nowP)
 {
@@ -1933,7 +1899,6 @@ occasional(ClientData client_data, struct timeval *nowP)
 	watchdog_flag = 1;	/* let the watchdog know that we are alive */
 }
 
-
 #ifdef STATS_TIME
 static void
 show_stats(ClientData client_data, struct timeval *nowP)
@@ -1941,7 +1906,6 @@ show_stats(ClientData client_data, struct timeval *nowP)
 	logstats(nowP);
 }
 #endif				/* STATS_TIME */
-
 
 /* Generate debugging statistics syslog messages for all packages. */
 static void
@@ -1970,7 +1934,6 @@ logstats(struct timeval *nowP)
 	fdwatch_logstats(stats_secs);
 	tmr_logstats(stats_secs);
 }
-
 
 /* Generate debugging statistics syslog message. */
 static void
