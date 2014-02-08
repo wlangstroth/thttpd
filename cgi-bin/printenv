@@ -21,9 +21,9 @@ printenv
 echo
 if [ "$CONTENT_LENGTH" != "" ] ; then
     if [ "$CONTENT_LENGTH" -ne 0 ] ; then
-	echo 'Input:'
-	echo
-	dd bs=1 count=$CONTENT_LENGTH
-	echo
+        echo 'Input:'
+        echo
+        dd bs=1 count=$CONTENT_LENGTH
+        echo
     fi
 fi

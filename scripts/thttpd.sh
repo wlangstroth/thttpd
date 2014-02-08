@@ -8,8 +8,8 @@ case "$1" in
 
     start)
     if [ -x /usr/local/sbin/thttpd_wrapper ] ; then
-	echo -n " thttpd"
-	/usr/local/sbin/thttpd_wrapper &
+        echo -n " thttpd"
+        /usr/local/sbin/thttpd_wrapper &
     fi
     ;;
 
