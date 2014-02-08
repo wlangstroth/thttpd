@@ -7,17 +7,10 @@ Simple: It handles only the minimum necessary to implement HTTP/1.1.
 Small: It has a very small run-time size, since it does not fork and is very
 careful about memory allocation.
 
-Portable: It compiles cleanly on FreeBSD 2.x/3.x, SunOS 4.1.x, Solaris 2.x,
-BSD/OS 2.x, Linux 1.2.x, OSF/1 (on a 64-bit Alpha), and no doubt many others.
-
-Fast: In typical use it's about as fast as the best full-featured servers
-(Apache, NCSA, Netscape). Under extreme load it's much faster.
-
 Secure: It goes to great lengths to protect the web server machine against
 attacks and breakins from other sites.
 
-It also has one extremely useful feature (URL-traffic-based throttling) that no
-other server currently has.
+It also has URL-traffic-based throttling.
 
 See the manual entry for more details. See the INSTALL file for
 configuration and installation instructions.
