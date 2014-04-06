@@ -57,9 +57,11 @@
 ** as a security measure that's how you do it, just don't define any
 ** pattern here and don't run with the -c flag.
 */
+#define CGI_PATTERN "/cgi-bin/*"
+
 #ifdef notdef
 /* Some sample patterns.  Allow programs only in one central directory: */
-#define CGI_PATTERN "/cgi-bin/*"
+
 /* Allow programs in a central directory, or anywhere in a trusted
 ** user's tree: */
 #define CGI_PATTERN "/cgi-bin/*|/jef/**"
