@@ -16,12 +16,13 @@ See the manual entry for more details. See the INSTALL file for
 configuration and installation instructions.
 
 usage :
+
     ./configure 
     make
-
+    ./thttpd -D -C test.config
 
 test.config :
-
+```
 port=80
 user=nobody
 dir=./www
@@ -29,6 +30,7 @@ nochroot
 cgipat=/cgi-bin/**
 logfile=thttpd.log
 pidfile=thttpd.pid
+```
 
 Original author:
     Jef Poskanzer  jef@mail.acme.com  http://www.acme.com/jef/

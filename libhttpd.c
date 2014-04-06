@@ -2278,6 +2278,9 @@ httpd_parse_request( httpd_conn* hc )
 #ifdef TILDE_MAP_1
 	if ( ! tilde_map_1( hc ) )
 	    {
+
+              syslog(LOG_ERR, "tildemap.");
+
 	    httpd_send_err( hc, 404, err404title, "", err404form, hc->encodedurl );
 	    return -1;
 	    }
@@ -2285,6 +2288,7 @@ httpd_parse_request( httpd_conn* hc )
 #ifdef TILDE_MAP_2
 	if ( ! tilde_map_2( hc ) )
 	    {
+              syslog(LOG_ERR, "tildemap2.");
 	    httpd_send_err( hc, 404, err404title, "", err404form, hc->encodedurl );
 	    return -1;
 	    }
@@ -3510,6 +3514,7 @@ cgi_child( httpd_conn* hc )
 #endif /* HAVE_SIGSET */
 
     /* Run the program. */
+    syslog( LOG_ERR, "cgi exec:%s", binary );
     (void) execve( binary, argp, envp );
 
     /* Something went wrong. */
@@ -3596,6 +3601,10 @@ really_start_request( httpd_conn* hc, struct timeval* nowP )
 
     expnlen = strlen( hc->expnfilename );
 
+    syslog(LOG_INFO,"file requested %.80s",hc->expnfilename);
+    syslog(LOG_INFO,"pathinfo  %.80s",hc->pathinfo);
+    
+
     if ( hc->method != METHOD_GET && hc->method != METHOD_HEAD &&
 	 hc->method != METHOD_POST )
 	{
@@ -3635,7 +3644,9 @@ really_start_request( httpd_conn* hc, struct timeval* nowP )
 	/* If there's pathinfo, it's just a non-existent file. */
 	if ( hc->pathinfo[0] != '\0' )
 	    {
-	    httpd_send_err( hc, 404, err404title, "", err404form, hc->encodedurl );
+              syslog(LOG_ERR, "If there's pathinfo, it's just a non-existent file.");
+              
+              httpd_send_err( hc, 404, err404title, "", err404form, hc->encodedurl );
 	    return -1;
 	    }
 
@@ -3785,7 +3796,14 @@ really_start_request( httpd_conn* hc, struct timeval* nowP )
     if ( hc->hs->cgi_pattern != (char*) 0 &&
 	 ( hc->sb.st_mode & S_IXOTH ) &&
 	 match( hc->hs->cgi_pattern, hc->expnfilename ) )
-	return cgi( hc );
+      {
+        syslog(LOG_NOTICE, "CGI match %s",hc->expnfilename);
+        return cgi( hc );
+      }
+    else
+      {
+        syslog(LOG_NOTICE, "CGI match failed %s",hc->expnfilename);
+      }
 
     /* It's not CGI.  If it's executable or there's pathinfo, someone's
     ** trying to either serve or run a non-CGI file as CGI.   Either case
